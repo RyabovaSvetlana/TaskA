@@ -1,0 +1,18 @@
+//  Программа, которая выводит третью цифру заданного числа или сообщает, что третьей цифры нет
+int InputNumber = InputNumber ("Введите число");
+int result = returnThreeNumber (InputNumber2);
+if (result == 0)
+{
+    Console.WruteLine ("Третья цифра числа отсутствует");
+}
+else
+{
+Console.WriteLine ("Третья цифра Вашего числа {InputNumber}  -> {result}/n");
+}
+int ReturnThreeNumber (int number);
+{
+    int result = 0; 
+    while (number > 999) {number /= 10;}
+if (number > 99){number % 10; }
+return result;
+}
