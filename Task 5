@@ -1,0 +1,27 @@
+// Программа, которая принимает на вход трёхзначное число и на выходе показывает вторую цифру этого числа.
+
+int number = ReadInt("Введите трехзначное число: ");
+int sss = number.ToString().Length;
+
+int InCenter(int a)
+{
+    
+    int result = ((a / 10) % 10);
+    return result;
+}
+
+if (sss < 3 || sss > 3)
+{
+    Console.WriteLine("Число не трехзначное");
+}
+else
+{
+    Console.WriteLine(InCenter(number));
+}
+
+
+int ReadInt(string message)
+{
+    Console.Write(message);
+    return Convert.ToInt32(Console.ReadLine());
+}
