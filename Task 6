@@ -1,18 +1,32 @@
 //  Программа, которая выводит третью цифру заданного числа или сообщает, что третьей цифры нет
-int InputNumber = InputNumber ("Введите число");
-int result = returnThreeNumber (InputNumber2);
-if (result == 0)
+
+int number = ReadInt("Введите ваше число: ");
+int count = number.ToString().Length;
+Console.Write(MakeArray(number, count));
+
+int ReadInt(string message)
 {
-    Console.WruteLine ("Третья цифра числа отсутствует");
+    Console.Write(message);
+    return Convert.ToInt32(Console.ReadLine());
 }
-else
+
+
+int MakeArray(int a, int b)
 {
-Console.WriteLine ("Третья цифра Вашего числа {InputNumber}  -> {result}/n");
-}
-int ReturnThreeNumber (int number);
-{
-    int result = 0; 
-    while (number > 999) {number /= 10;}
-if (number > 99){number % 10; }
+int result = 0;
+    if (b < 3)
+    {
+        Console.Write("Отсутствует третья цифра: ");
+    }
+    else
+    {
+        int c = 1;
+        for (int i = b; i > 3; i--)
+        {
+            c = c * 10;
+        }
+
+        result = (a / c) % 10;
+    }
 return result;
 }
