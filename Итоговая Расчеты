@@ -1,0 +1,179 @@
+Рассчитайте следующие показатели:
+
+# 1. Из каких регионов больше всего заявок
+
+## Считаю данные из файла Excel
+marketing_data = pd.read_excel(file_path, sheet_name='Маркетинговые данные')
+crm_data = pd.read_excel(file_path, sheet_name='Данные из CRM')
+
+#@ Объединение данных по ключу Client ID
+merged_data = pd.merge(marketing_data, crm_data, on='Client ID', how='inner')
+
+## Агрегигация данные по регионам
+region_counts = merged_data['Region'].value_counts()
+
+#@ Найти регион с наибольшим количеством заявок
+max_region = region_counts.idxmax()
+max_requests = region_counts[max_region]
+print(f"Из региона '{max_region}' поступило больше всего заявок: {max_requests} заявок.")
+Из региона 'Krasnodar Krai' поступило больше всего заявок: 212045 заявок.
+
+## Создание DataFrame с результатами
+result_1_df = pd.DataFrame({'Регион': [max_region], 'Количество заявок': [max_requests]})
+
+## Запись результатов в новый Excel файл
+result_excel_file = 'Аналитика.xlsx'
+result_1_df.to_excel(result_excel_file, index=False)
+
+# 2. Какой средний процент отказов (Bounce)
+## Получение таблицы "Маркетинговые данные"
+marketing_data = data['Маркетинговые данные']
+
+## Рассчет среднего процент отказов
+bounce_rate = marketing_data['Bounce Rate'].mean()
+# 3. С каких устройств чаще заходят на сайты
+
+## Получение таблицы "Маркетинговые данные"
+marketing_data = data['Маркетинговые данные']
+
+## Группируем данные по Device Category и считаем количество сеансов
+device_counts = marketing_data.groupby('Device Category')['Sessions'].count()
+
+## Сортировка данных по количеству сеансов в порядке убывания
+device_counts = device_counts.sort_values(ascending=False)
+
+## Выводим результаты
+print("Устройства, с которых чаще всего заходят на сайты:")
+print(device_counts)
+Устройства, с которых чаще всего заходят на сайты:
+Device Category
+mobile     39465
+desktop    24630
+tablet      2067
+
+# 4. Какие источники наиболее конвертируемые
+ 
+## Загрузка таблиц из файла Excel
+currency_data = pd.read_excel(file_path, sheet_name='Курс валют')
+reference_data = pd.read_excel(file_path, sheet_name='Справочник')
+crm_data= pd.read_excel(file_path, sheet_name='Данные из CRM')
+marketing_data = pd.read_excel(file_path, sheet_name='Маркетинговые данные')
+
+## Объединение таблицы по Client ID
+joined_data= crm_data.merge(marketing_data, on='Client ID', how='left')
+
+# Рассчет коэффициента конверсии для каждого источника
+joined_data['Conversion Rate'] = joined_data['Goal Completions'] / joined_data['Sessions']
+
+## Групировка данных по источнику и рассчет среднего коэффициента конверсии
+grouped_data = joined_data.groupby('Source').agg({'Conversion Rate': 'mean'})
+
+## ОСортировка источников по убыванию среднего коэффициента конверсии
+sorted_data = grouped_data.sort_values('Conversion Rate', ascending=False)
+
+## Вывод наиболее конвертируемые источники
+print(sorted_data.head())
+                           Conversion Rate
+Source                                    
+crm2company.streamwood.ru              1.0
+alohafind.com                          1.0
+tut.by                                 1.0
+min.rusdealers.ru                      1.0
+kuban.autoneva.ru                      1.0
+
+
+# 5. Рассчитайте ROMI (при расчете придумайте методологию расчета средней стоимость проданного автомобиля)
+
+## Загрузка таблиц из файла Excel
+currency_data = pd.read_excel(file_path, sheet_name='Курс валют')
+reference_data = pd.read_excel(file_path, sheet_name='Справочник')
+crm_data= pd.read_excel(file_path, sheet_name='Данные из CRM')
+marketing_data = pd.read_excel(file_path, sheet_name='Маркетинговые данные')
+
+## Средняя стоимость проданного автомобиля
+average_car_price = reference_data['Итоговая стоимость в рублях'].mean()
+
+## Прибыль от инвестиций
+profit = (average_car_price * crm_data['Продажа'].count() * reference_data['Маржинальность'].mean()) - marketing_data['Goal Value'].sum()
+
+## Инвестиции
+investment = marketing_data['Goal Value'].sum()
+
+## ROMI
+romi = (profit - investment) / investment
+print("ROMI:", romi)
+ROMI: 66.96501923112233
+
+## Создание DataFrame с результатами
+result_df_5 = pd.DataFrame({'ROMI': [romi]})
+
+
+# 6. Посчитайте выручку в рублях только по долларовым позициям
+
+## Считать данные из файла Excel
+reference_data = pd.read_excel(file_path, sheet_name='Справочник')
+
+## Отфильтровать только долларовые позиции
+usd_positions = reference_data[reference_data['Валюта'] == 'Доллар США']
+
+## Суммируйте выручку для всех долларовых позиций
+total_revenue_usd = usd_positions['Итоговая стоимость в рублях'].sum()
+print("Выручка в рублях только по долларовым позициям:", total_revenue_usd)
+Выручка в рублях только по долларовым позициям: 26896114.46
+
+## Создание DataFrame с результатами
+result_df_6 = pd.DataFrame({'Выручка в рублях только по долларовым позициям:': [total_revenue_usd]})
+
+
+# 7. Определите, какой источник трафика наиболее выгоден для компании по текущим данным
+
+## Загрузка таблиц из файла Excel
+currency_data = pd.read_excel(file_path, sheet_name='Курс валют')
+reference_data = pd.read_excel(file_path, sheet_name='Справочник')
+crm_data= pd.read_excel(file_path, sheet_name='Данные из CRM')
+marketing_data = pd.read_excel(file_path, sheet_name='Маркетинговые данные')
+
+## Объединение данных из всех таблиц
+merged_data = pd.merge(crm_data, marketing_data, on='Client ID', how='inner')
+
+##  Общая стоимость покупок для каждого источника трафика
+traffic_source_value = merged_data.groupby('Source')['Goal Value'].sum().reset_index()
+
+## Определение источника трафика с наибольшей общей стоимостью покупок
+most_profitable_source = traffic_source_value.loc[traffic_source_value['Goal Value'].idxmax()]
+print("Наиболее выгодный источник трафика для компании: ", most_profitable_source['Source'])
+Наиболее выгодный источник трафика для компании:  BMW-keyauto-krd.ru
+
+
+# 8. Ответьте на вопрос: каких показателей не хватает, чтобы посчитать чистую прибыль?
+Себестоимость продукции (Cost of Goods Sold, COGS): Это затраты, связанные с производством или приобретением продукции, которая была продана. Они могут включать в себя затраты на материалы, труд и другие операционные издержки.
+
+Операционные издержки (Operating Expenses): Это все затраты, связанные с обычной деятельностью компании, кроме COGS. Включает в себя административные расходы, расходы на маркетинг, арендные платежи и т.д.
+
+Налоги (Taxes): Это сумма, которую компания обязана выплатить в виде налогов на прибыль.
+
+Прочие затраты: Могут включать в себя любые другие затраты, которые не учтены в COGS или операционных издержках, например, проценты по кредитам, амортизация и т.д.
+
+Чтобы рассчитать чистую прибыль, нужно вычесть сумму всех затрат из общей выручки
+
+
+# 9. Какая будет выручка за первый квартал, если средняя стоимость авто останется неизменной, а продажи будут пропорциональны текущим данным
+
+## Загрузка таблиц из файла Excel
+currency_data = pd.read_excel(file_path, sheet_name='Курс валют')
+reference_data = pd.read_excel(file_path, sheet_name='Справочник')
+crm_data= pd.read_excel(file_path, sheet_name='Данные из CRM')
+marketing_data = pd.read_excel(file_path, sheet_name='Маркетинговые данные')
+
+## Средняя стоимость автомобиля
+average_price = reference_data['Цена'].mean()
+# Общее количество продаж автомобилей за первый квартал
+total_sales = crm_data['Продажа'].sum()
+
+## Общая выручка за первый квартал
+total_revenue = average_price * total_sales
+print("Общая выручка за первый квартал:", total_revenue)
+Общая выручка за первый квартал: 11750244712.837837
+
+## Создание DataFrame с результатами
+result_df_10 = pd.DataFrame({'Общая выручка за первый квартал:': [total_revenue]})
